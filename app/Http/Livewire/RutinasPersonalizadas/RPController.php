@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Rutinas;
+namespace App\Http\Livewire\RutinasPersonalizadas;
 
 use Livewire\Component;
 use App\Models\Rutinas;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class RutinasController extends Component
+class RPController extends Component
 {
     use WithPagination;
     use WithFileUploads;
@@ -24,9 +24,8 @@ class RutinasController extends Component
     public $selected_id;
     public function render()
     {
-        $rutinas = Rutinas::where('estado', 'publica')->paginate($this->pagination);
-
-        return view('livewire.rutinas.rutinas-controller', [
+        $rutinas = Rutinas::where('estado', 'personalizada')->paginate($this->pagination);
+        return view('livewire.rutinas-personalizadas.r-p-controller', [
             'rutinas' => $rutinas
         ])->extends('layouts.theme.app')
             ->section('content');

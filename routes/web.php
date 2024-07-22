@@ -14,6 +14,7 @@ use App\Http\Livewire\GruposMusculares\GruposMuscularesController;
 use App\Http\Livewire\Equipo\EquipoController;
 use App\Http\Livewire\Tags\TagsController;
 use App\Http\Livewire\Rutinas\RutinasController;
+use App\Http\Livewire\RutinasPersonalizadas\RPController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -35,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('gruposM', GruposMuscularesController::class);
     Route::get('tags', TagsController::class);
     Route::get('rutinas', RutinasController::class);
+    Route::get('rp', RPController::class);
     Route::get('equipo', EquipoController::class);
     Route::group(['middleware' => ['role:Admin']], function () {
         Route::get('roles', RolesController::class);

@@ -19,10 +19,11 @@ class VideosController extends Component
     public $video_url;
     public $selected_id;
     public $search;
-    public $tags = [];
+    public $tags;
     public $equipos;
     use WithPagination;
     use WithFileUploads;
+    public $page = 1;
     public $pageTitle, $componentName;
     private $pagination = 3;
     protected $rules = [
@@ -66,7 +67,7 @@ class VideosController extends Component
         $this->resetValidation();
         $this->resetPage();
         $this->pageTitle = 'Listado';
-        $this->componentName = 'Clientes';
+        $this->componentName = 'Videos';
     }
     public function resetUI()
     {
@@ -88,12 +89,13 @@ class VideosController extends Component
     {
         $gruposMusculares = GruposMusculares::all();
         $equipo = Equipo::all();
-        $this->tags = Tag::all();
+        $tags = Tag::all();
+        //dd($tags);
         $customers = GruposMuscularesVideos::with(['tags', 'equipos', 'grupoMuscular'])->paginate(10);
         return view('livewire.videos.videos-controller', [
             'data' => $customers,
             'gruposMusculares' => $gruposMusculares,
-            'tags' =>  $this->tags,
+            'etiqueta' =>  $tags,
             'eq' => $equipo
 
         ])
@@ -102,7 +104,7 @@ class VideosController extends Component
     }
     public function Store()
     {
-        $this->validate();
+        //$this->validate();
 
         // Convertir la miniatura a base64
         $miniatura = $this->miniatura->store('miniaturas', 'public');
@@ -146,7 +148,7 @@ class VideosController extends Component
     }
     public function Update()
     {
-        $this->validate();
+        // $this->validate();
 
         $video = GruposMuscularesVideos::find($this->selected_id);
 

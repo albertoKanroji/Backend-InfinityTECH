@@ -48,7 +48,7 @@
             <label>Etiquetas</label>
             <select wire:model.lazy="tags" class="form-control">
                 <option value="" selected>Elegir</option>
-                @foreach($tags as $grupo)
+                @foreach($etiqueta as $grupo)
                 <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
                 @endforeach
             </select>
