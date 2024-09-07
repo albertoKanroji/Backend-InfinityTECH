@@ -32,8 +32,4 @@ class Customers extends Model
     {
         return $this->hasMany(Respuesta::class, 'customers_id');
     }
-    public function seguimientoImagenes()
-    {
-        return $this->hasMany(SeguimientoClientesImagenes::class, 'customers_id');
-    }
 }

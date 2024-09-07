@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Ejercicios;
 use App\Models\RespuestaOpcion;
 use App\Models\Rutinas;
-use App\Models\SeguimientoClientesImagenes;
 use Illuminate\Http\Request;
 use App\Models\Customers;
 use Illuminate\Support\Facades\DB;
@@ -222,89 +221,6 @@ class CustomersController extends Controller
                 'success' => false,
                 'status' => 500,
                 'message' => 'Error al actualizar el cliente: ' . $e->getMessage(),
-                'data' => null
-            ], 500);
-        }
-    }
-
-    public function storeImages(Request $request)
-    {
-        // Validación del request
-        $validator = Validator::make($request->all(), [
-            'customer_id' => 'required|exists:customers,id', // Verifica que el customer_id exista
-            'images' => 'required|array',                   // Asegura que 'images' sea un array
-            'images.*' => 'required|string',                // Cada imagen debe ser una cadena en Base64
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'status' => 422,
-                'message' => 'Error de validación',
-                'data' => $validator->errors()
-            ], 422);
-        }
-
-        try {
-            $customerId = $request->input('customer_id');
-            $images = $request->input('images');
-
-            // Guardar cada imagen en la tabla seguimiento_clientes_imagenes
-            foreach ($images as $imageBase64) {
-                $imagen = new SeguimientoClientesImagenes();
-                $imagen->customers_id = $customerId;
-                $imagen->image = base64_decode($imageBase64); // Decodificar Base64 a binario
-                $imagen->save();
-            }
-
-            return response()->json([
-                'success' => true,
-                'status' => 201,
-                'message' => 'Imágenes guardadas correctamente',
-                'data' => null
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'status' => 500,
-                'message' => 'Error al guardar imágenes: ' . $e->getMessage(),
-                'data' => null
-            ], 500);
-        }
-    }
-    public function listImages($customerId)
-    {
-        try {
-            // Verificar si el cliente existe
-            $cliente = Customers::find($customerId);
-            if (!$cliente) {
-                return response()->json([
-                    'success' => false,
-                    'status' => 404,
-                    'message' => 'Cliente no encontrado',
-                    'data' => null
-                ], 404);
-            }
-
-            // Obtener las imágenes asociadas al cliente
-            $imagenes = SeguimientoClientesImagenes::where('customers_id', $customerId)->get();
-
-            // Convertir las imágenes a formato Base64
-            $imagenesBase64 = $imagenes->map(function ($imagen) {
-                return base64_encode($imagen->image);
-            });
-
-            return response()->json([
-                'success' => true,
-                'status' => 200,
-                'message' => 'Imágenes obtenidas correctamente',
-                'data' => $imagenesBase64
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'status' => 500,
-                'message' => 'Error al obtener las imágenes: ' . $e->getMessage(),
                 'data' => null
             ], 500);
         }

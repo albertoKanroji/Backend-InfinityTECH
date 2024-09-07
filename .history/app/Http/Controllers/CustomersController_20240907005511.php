@@ -272,41 +272,4 @@ class CustomersController extends Controller
             ], 500);
         }
     }
-    public function listImages($customerId)
-    {
-        try {
-            // Verificar si el cliente existe
-            $cliente = Customers::find($customerId);
-            if (!$cliente) {
-                return response()->json([
-                    'success' => false,
-                    'status' => 404,
-                    'message' => 'Cliente no encontrado',
-                    'data' => null
-                ], 404);
-            }
-
-            // Obtener las imágenes asociadas al cliente
-            $imagenes = SeguimientoClientesImagenes::where('customers_id', $customerId)->get();
-
-            // Convertir las imágenes a formato Base64
-            $imagenesBase64 = $imagenes->map(function ($imagen) {
-                return base64_encode($imagen->image);
-            });
-
-            return response()->json([
-                'success' => true,
-                'status' => 200,
-                'message' => 'Imágenes obtenidas correctamente',
-                'data' => $imagenesBase64
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'status' => 500,
-                'message' => 'Error al obtener las imágenes: ' . $e->getMessage(),
-                'data' => null
-            ], 500);
-        }
-    }
 }

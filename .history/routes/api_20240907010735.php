@@ -26,7 +26,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
 
-    Route::prefix('')->group(function () {
+    Route::prefix('usuarios')->group(function () {
         Route::get('/customer-data', [CustomersController::class, 'getData']);
         //  Route::get('/', [CustomersController::class, 'index'])->name('usuarios.index');
         Route::put('/update/{id}', [CustomersController::class, 'update']);

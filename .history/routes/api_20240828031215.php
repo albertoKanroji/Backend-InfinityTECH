@@ -26,15 +26,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
 
-    Route::prefix('')->group(function () {
+    Route::prefix('usuarios')->group(function () {
         Route::get('/customer-data', [CustomersController::class, 'getData']);
         //  Route::get('/', [CustomersController::class, 'index'])->name('usuarios.index');
         Route::put('/update/{id}', [CustomersController::class, 'update']);
 
         Route::post('/login', [CustomersController::class, 'login'])->name('usuarios.login');
         Route::post('/', [CustomersController::class, 'store'])->name('usuarios.store');
-        Route::post('/store-images', [CustomersController::class, 'storeImages']);
-        Route::get('/store-images/{id}/cliente', [CustomersController::class, 'listImages']);
         // Route::get('/{id}', [CustomersController::class, 'show'])->name('usuarios.show');
         // Route::put('/{id}', [CustomersController::class, 'update'])->name('usuarios.update');
         // Route::delete('/{id}', [CustomersController::class, 'destroy'])->name('usuarios.destroy');
