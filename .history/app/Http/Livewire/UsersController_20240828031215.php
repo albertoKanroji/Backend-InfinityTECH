@@ -194,9 +194,14 @@ class UsersController extends Component
     public function destroy(User $user)
     {
         if ($user) {
-            $user->delete();
-            $this->resetUI();
-            $this->emit('user-deleted', 'Usuario Eliminado');
+            $sales = Sale::where('user_id', $user->id)->count();
+            if ($sales > 0) {
+                $this->emit('user-withsales', 'No es posible eliminar el usuario porque tiene ventas registradas');
+            } else {
+                $user->delete();
+                $this->resetUI();
+                $this->emit('user-deleted', 'Usuario Eliminado');
+            }
         }
     }
 }

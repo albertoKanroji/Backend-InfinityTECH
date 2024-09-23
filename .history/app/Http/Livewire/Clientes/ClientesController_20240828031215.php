@@ -91,13 +91,13 @@ class ClientesController extends Component
             'nombre' => 'required|min:3',
             'apellido' => 'required|min:3',
             'apellido2' => 'required|min:3',
-            'correo' => 'required|unique:customers|email',
+            'correo' => 'required|unique:users|email',
             'status' => 'required|not_in:Elegir',
-            // 'rutina' => 'required|min:3',
-            // 'profileIsComplete' => 'required|boolean',
+            'rutina' => 'required|min:3',
+            'profileIsComplete' => 'required|boolean',
             'peso' => 'required|numeric|min:1',
             'altura' => 'required|numeric|min:1',
-            //'IMC' => 'required|numeric|min:1',
+            'IMC' => 'required|numeric|min:1',
             'password' => 'required|min:3'
         ];
 
@@ -113,41 +113,37 @@ class ClientesController extends Component
             'correo.unique' => 'El email ya existe en el sistema',
             'status.required' => 'Selecciona el estatus del usuario',
             'status.not_in' => 'Selecciona el estatus',
-            // 'rutina.required' => 'Ingresa la rutina',
-            // 'rutina.min' => 'La rutina debe tener al menos 3 caracteres',
-            // 'profileIsComplete.required' => 'Selecciona si el perfil está completo',
-            // 'profileIsComplete.boolean' => 'Valor no válido para perfil completo',
+            'rutina.required' => 'Ingresa la rutina',
+            'rutina.min' => 'La rutina debe tener al menos 3 caracteres',
+            'profileIsComplete.required' => 'Selecciona si el perfil está completo',
+            'profileIsComplete.boolean' => 'Valor no válido para perfil completo',
             'peso.required' => 'Ingresa el peso',
             'peso.numeric' => 'El peso debe ser numérico',
             'peso.min' => 'El peso debe ser mayor a 0',
             'altura.required' => 'Ingresa la altura',
             'altura.numeric' => 'La altura debe ser numérica',
             'altura.min' => 'La altura debe ser mayor a 0',
-            // 'IMC.required' => 'Ingresa el IMC',
-            // 'IMC.numeric' => 'El IMC debe ser numérico',
-            // 'IMC.min' => 'El IMC debe ser mayor a 0',
+            'IMC.required' => 'Ingresa el IMC',
+            'IMC.numeric' => 'El IMC debe ser numérico',
+            'IMC.min' => 'El IMC debe ser mayor a 0',
             'password.required' => 'Ingresa el password',
             'password.min' => 'El password debe tener al menos 3 caracteres'
         ];
 
         $this->validate($rules, $messages);
-$IMC=$this->peso*($this->altura*2);
+
         $user = Customers::create([
-
-
-
-
             'nombre' => $this->nombre,
             'apellido' => $this->apellido,
             'apellido2' => $this->apellido2,
             'correo' => $this->correo,
             'password' => bcrypt($this->password),
             'status' => $this->status,
-            // 'rutina' => $this->rutina,
-            // 'profileIsComplete' => $this->profileIsComplete,
+            'rutina' => $this->rutina,
+            'profileIsComplete' => $this->profileIsComplete,
             'peso' => $this->peso,
             'altura' => $this->altura,
-            'IMC' => $IMC,
+            'IMC' => $this->IMC,
         ]);
 
 

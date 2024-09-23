@@ -47,7 +47,7 @@
             @error('status') <span class="text-danger er">{{ $message}}</span>@enderror
         </div>
     </div>
-    <!-- <div class="col-sm-12 col-md-4">
+    <div class="col-sm-12 col-md-4">
         <div class="form-group">
             <label>Rutina</label>
             <input type="text" wire:model.lazy="rutina" class="form-control" placeholder="ej: Rutina de Ejercicio">
@@ -63,7 +63,7 @@
             </select>
             @error('profileIsComplete') <span class="text-danger er">{{ $message}}</span>@enderror
         </div>
-    </div> -->
+    </div>
     <div class="col-sm-12 col-md-4">
         <div class="form-group">
             <label>Peso (kg)</label>
@@ -81,7 +81,7 @@
     <div class="col-sm-12 col-md-4">
         <div class="form-group">
             <label>IMC</label>
-            <input type="number" wire:model.lazy="IMC" class="form-control" placeholder="ej: 22.5" readonly step="0.1">
+            <input type="number" wire:model.lazy="IMC" class="form-control" placeholder="ej: 22.5" step="0.1">
             @error('IMC') <span class="text-danger er">{{ $message}}</span>@enderror
         </div>
     </div>

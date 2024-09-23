@@ -16,7 +16,10 @@ class User extends Authenticatable
     use HasRoles;
 
 
-
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
 
     /**
      * The attributes that are mass assignable.
