@@ -233,9 +233,9 @@ class CustomersController extends Controller
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|exists:customers,id', // Verifica que el customer_id exista
             'images' => 'required|array',                   // Asegura que 'images' sea un array
-            'images.*.image' => 'required|string',          // Cada imagen debe ser una cadena en Base64
-            'images.*.peso' => 'nullable|numeric',           // El peso es opcional y debe ser una cadena
-            'images.*.comentarios' => 'nullable|string'     // Los comentarios son opcionales y deben ser una cadena
+            'images.*.image' => 'required',          // Cada imagen debe ser una cadena en Base64
+            'images.*.peso' => 'nullable',           // El peso es opcional y debe ser una cadena
+            'images.*.comentarios' => 'nullable'     // Los comentarios son opcionales y deben ser una cadena
         ]);
 
         if ($validator->fails()) {
@@ -256,19 +256,16 @@ class CustomersController extends Controller
                 $imagen = new SeguimientoClientesImagenes();
                 $imagen->customers_id = $customerId;
                 $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
-
-                // Guardar los campos opcionales
-                $imagen->peso = $imageData['peso'] ?? null;
-                $imagen->comentarios = $imageData['comentarios'] ?? null;
+                $imagen->peso = $imageData['peso'] ?? null; // Asignar peso si existe
+                $imagen->comentarios = $imageData['comentarios'] ?? null; // Asignar comentarios si existen
                 $imagen->save();
             }
 
-            // Excluir datos binarios de la respuesta
             return response()->json([
                 'success' => true,
                 'status' => 201,
                 'message' => 'Imágenes guardadas correctamente',
-                'data' => null // Asegurarse de que no se incluyen datos binarios en la respuesta
+                'data' => null
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -297,15 +294,9 @@ class CustomersController extends Controller
             // Obtener las imágenes asociadas al cliente
             $imagenes = SeguimientoClientesImagenes::where('customers_id', $customerId)->get();
 
-            // Convertir las imágenes a formato Base64 e incluir peso y comentarios
+            // Convertir las imágenes a formato Base64
             $imagenesBase64 = $imagenes->map(function ($imagen) {
-                return [
-                    'id'=>$imagen->id,
-                    'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
-                    'peso' => $imagen->peso,                  // Incluir el peso
-                    'comentarios' => $imagen->comentarios ,
-                    'created_at' => $imagen->created_at      // Incluir los comentarios
-                ];
+                return base64_encode($imagen->image);
             });
 
             return response()->json([

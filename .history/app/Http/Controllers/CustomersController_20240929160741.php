@@ -300,7 +300,6 @@ class CustomersController extends Controller
             // Convertir las imágenes a formato Base64 e incluir peso y comentarios
             $imagenesBase64 = $imagenes->map(function ($imagen) {
                 return [
-                    'id'=>$imagen->id,
                     'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
                     'peso' => $imagen->peso,                  // Incluir el peso
                     'comentarios' => $imagen->comentarios ,
