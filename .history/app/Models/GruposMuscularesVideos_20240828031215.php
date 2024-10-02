@@ -15,8 +15,7 @@ class GruposMuscularesVideos extends Model
         'miniatura',
         'descripcion',
         'gm_id',
-        'video_url',
-        'lesion'
+        'video_url'
 
 
     ];

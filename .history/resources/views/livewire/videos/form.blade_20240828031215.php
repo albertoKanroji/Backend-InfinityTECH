@@ -67,14 +67,6 @@
 
         </div>
     </div>
-    <div class="col-sm-12 col-md-12">
-        <div class="form-group">
-            <label>Informacion de Lesion</label>
-            <textarea wire:model.lazy="lesion" class="form-control"
-                placeholder="Informacion de lesion"></textarea>
-            @error('lesion') <span class="text-danger er">{{ $message }}</span>@enderror
-        </div>
-    </div>
 </div>
 
 @include('common.modalFooter')

@@ -20,7 +20,6 @@ class VideosController extends Component
     public $selected_id;
     public $search;
     public $tags;
-    public $lesion;
     public $equipos;
     use WithPagination;
     use WithFileUploads;
@@ -156,8 +155,7 @@ class VideosController extends Component
         'descripcion' => 'nullable|string',
         'gm_id' => 'required|exists:grupos_musculares,id',
         'video_url' => 'required|url',
-        'lesion' => 'nullable|string',
-
+        'miniatura' => 'nullable|image|max:2048', // Adjust max size as needed
     ]);
 
     try {
@@ -169,14 +167,13 @@ class VideosController extends Component
             'descripcion' => $this->descripcion,
             'gm_id' => $this->gm_id,
             'video_url' => $this->video_url,
-            'lesion' => $this->lesion,
         ]);
 
-
-         if ($this->miniatura instanceof \Livewire\TemporaryUploadedFile) {
-             $miniaturaPath = $this->miniatura->store('miniaturas', 'public');
-             $video->miniatura = $miniaturaPath;
-         }
+        // Handle thumbnail update
+        // if ($this->miniatura instanceof \Livewire\TemporaryUploadedFile) {
+        //     $miniaturaPath = $this->miniatura->store('miniaturas', 'public');
+        //     $video->miniatura = $miniaturaPath;
+        // }
 
         // Save changes
         $video->save();
