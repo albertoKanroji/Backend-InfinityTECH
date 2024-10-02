@@ -61,8 +61,8 @@
                                     <h6>{{$r->altura}}</h6>
                                 </td>
                                 <td class="text-center">
-                                    <h6>{{ number_format($r->IMC, 2) }}</h6>
-                                </td>
+    <h6>{{ number_format($r->IMC, 2) }}</h6>
+</td>
 
 
                                 <td class="text-center">
@@ -91,7 +91,7 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function(){
         window.livewire.on('user-added', Msg => {
             $('#theModal').modal('hide')
             resetInputFile()
@@ -117,12 +117,14 @@
 
     })
 
-    function resetInputFile() {
+    function resetInputFile()
+    {
         $('input[type=file]').val('');
     }
 
 
-    function Confirm(id) {
+    function Confirm(id)
+    {
 
         swal({
             title: 'CONFIRMAR',
@@ -134,11 +136,13 @@
             confirmButtonColor: '#3B3F5C',
             confirmButtonText: 'Aceptar'
         }).then(function(result) {
-            if (result.value) {
+            if(result.value){
                 window.livewire.emit('deleteRow', id)
                 swal.close()
             }
 
         })
     }
+
+
 </script>

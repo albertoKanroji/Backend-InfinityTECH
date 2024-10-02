@@ -160,7 +160,7 @@ class ClientesController extends Component
 
         try {
             $user = Customers::find($this->selected_id);
-            $IMC = $this->peso / (($this->altura / 100) * ($this->altura / 100));   // Asegúrate de que esta fórmula es correcta para calcular IMC
+            $IMC = $this->peso / ($this->altura * $this->altura);  // Asegúrate de que esta fórmula es correcta para calcular IMC
             $user->update([
                 'nombre' => $this->nombre,
                 'apellido' => $this->apellido,
