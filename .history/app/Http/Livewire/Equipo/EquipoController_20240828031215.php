@@ -18,16 +18,13 @@ class EquipoController extends Component
     public $pageTitle, $componentName;
     public $selected_id;
     public function render()
-{
-    // Obtener los equipos únicos por nombre y paginarlos
-    $tags = Equipo::select('nombre')->distinct()->paginate($this->pagination);
-
-    return view('livewire.equipo.equipo-controller', [
-        'tags' => $tags
-    ])->extends('layouts.theme.app')
-        ->section('content');
-}
-
+    {
+        $tags = Equipo::paginate($this->pagination);
+        return view('livewire.equipo.equipo-controller', [
+            'tags' => $tags
+        ])->extends('layouts.theme.app')
+            ->section('content');
+    }
     public function mount()
     {
         $this->pageTitle = 'Listado';

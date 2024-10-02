@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <!-- <div class="col-sm-12 col-md-6">
+    <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Max Puntaje</label>
             <input type="number" wire:model.lazy="max_puntaje" class="form-control" placeholder="ej: 100">
@@ -48,7 +48,7 @@
             <input type="number" wire:model.lazy="min_puntaje" class="form-control" placeholder="ej: 0">
             @error('min_puntaje') <span class="text-danger er">{{ $message }}</span>@enderror
         </div>
-    </div> -->
+    </div>
 
     <div class="col-sm-12 col-md-6">
         <div class="form-group">

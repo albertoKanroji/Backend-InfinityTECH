@@ -8,11 +8,11 @@
             @error('nombre') <span class="text-danger er">{{ $message }}</span>@enderror
         </div>
     </div>
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Descripción</label>
-            <textarea wire:model.lazy="descripcion" class="form-control" placeholder="ej: Ejercicio para el pecho" rows="10" cols="50"></textarea>
-
+            <textarea wire:model.lazy="descripcion" class="form-control"
+                placeholder="ej: Ejercicio para el pecho"></textarea>
             @error('descripcion') <span class="text-danger er">{{ $message }}</span>@enderror
         </div>
     </div>

@@ -54,30 +54,14 @@ class RutinasControllerAPI extends Controller
     }
 
     // Obtener los ejercicios junto con el campo 'dia' desde la tabla pivote
-    $ejercicios = $rutina->videos()->withPivot('dia')->get()->groupBy('pivot.dia');
+    $ejercicios = $rutina->videos->groupBy('pivot.dia');
 
-    // Definir el orden de los días
-    $diasOrdenados = [
-        'Lunes' => 1,
-        'Martes' => 2,
-        'Miércoles' => 3,
-        'Jueves' => 4,
-        'Viernes' => 5,
-        'Sábado' => 6,
-    ];
-
-    // Ordenar los ejercicios por los días de la semana
-    $ejerciciosOrdenados = collect($ejercicios)->sortBy(function($items, $dia) use ($diasOrdenados) {
-        return $diasOrdenados[$dia] ?? 7; // Asignar un valor alto para días no definidos
-    })->toArray(); // Convertir la colección ordenada a array
-
-    // Retornar los ejercicios agrupados y ordenados por día como respuesta JSON
+    // Retornar los ejercicios agrupados por día como respuesta JSON
     return response()->json([
         'success' => true,
-        'data' => $ejerciciosOrdenados
+        'data' => $ejercicios
     ]);
 }
-
 
     public function obtenerRutinasPersonalizadas($clienteId)
     {

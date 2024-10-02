@@ -23,7 +23,8 @@
                                 <th class="table-th text-white text-center">IMAGEN</th>
                                 <th class="table-th text-white text-center">DESCRIPCIÓN</th>
                                 <th class="table-th text-white text-center">TIPO</th>
-
+                                <th class="table-th text-white text-center">MAX PUNTAJE</th>
+                                <th class="table-th text-white text-center">MIN PUNTAJE</th>
                                 <th class="table-th text-white text-center">ESTADO</th>
                                 <th class="table-th text-white text-center">ACCIONES</th>
                             </tr>
@@ -44,7 +45,12 @@
                                 <td class="text-center">
                                     <h6>{{ $video->tipo }}</h6>
                                 </td>
-
+                                <td class="text-center">
+                                    <h6>{{ $video->max_puntaje }}</h6>
+                                </td>
+                                <td class="text-center">
+                                    <h6>{{ $video->min_puntaje }}</h6>
+                                </td>
                                 <td class="text-center">
                                     <h6>{{ $video->estado }}</h6>
                                 </td>

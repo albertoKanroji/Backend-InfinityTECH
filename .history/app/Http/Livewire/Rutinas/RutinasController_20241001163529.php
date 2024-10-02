@@ -89,8 +89,6 @@ class RutinasController extends Component
             $miniaturaData = file_get_contents($miniaturaPath);
             $miniaturaBase64 = base64_encode($miniaturaData);
 
-
-
             $user = Rutinas::create([
                 'nombre' => $this->nombre,
                 'descripcion' => $this->descripcion,
@@ -122,18 +120,12 @@ class RutinasController extends Component
         ];
 
         $this->validate($rules);
-        $miniaturaBase64 = $this->imagen;
+
         try {
-            // $miniatura = $this->imagen->store('miniaturas', 'public');
-            // $miniaturaPath = storage_path("app/public/{$miniatura}");
-            // $miniaturaData = file_get_contents($miniaturaPath);
-            // $miniaturaBase64 = base64_encode($miniaturaData);
-            if ($this->imagen instanceof \Livewire\TemporaryUploadedFile) {
-                $miniatura = $this->imagen->store('miniaturas', 'public');
-                $miniaturaPath = storage_path("app/public/{$miniatura}");
-                $miniaturaData = file_get_contents($miniaturaPath);
-                $miniaturaBase64 = base64_encode($miniaturaData);
-            }
+            $miniatura = $this->imagen->store('miniaturas', 'public');
+            $miniaturaPath = storage_path("app/public/{$miniatura}");
+            $miniaturaData = file_get_contents($miniaturaPath);
+            $miniaturaBase64 = base64_encode($miniaturaData);
 
             $user = Rutinas::find($this->selected_id);
             $user->update([

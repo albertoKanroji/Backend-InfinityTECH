@@ -33,7 +33,6 @@ class Rutinas extends Model
     }
     public function videos()
     {
-        return $this->belongsToMany(VideoGM::class, 'rutinas_ejercicios', 'rutinas_id', 'videos_gm_id')
-            ->withPivot('dia'); // Incluimos el campo 'dia' de la tabla pivote
+        return $this->belongsToMany(VideoGM::class, 'rutinas_ejercicios', 'rutinas_id', 'videos_gm_id');
     }
 }

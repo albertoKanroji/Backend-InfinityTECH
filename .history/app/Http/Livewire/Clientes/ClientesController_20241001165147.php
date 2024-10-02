@@ -228,8 +228,11 @@ class ClientesController extends Component
     public function destroy(Customers $user)
 {
     try {
+        // Asegúrate de eliminar primero las dependencias
         $user->seguimientoImagenes()->delete();
+        // Desvincular rutinas relacionadas
         $user->rutinas()->detach();
+        // Eliminar respuestas asociadas
         $user->respuestas()->delete();
 
 

@@ -122,7 +122,7 @@ class RutinasController extends Component
         ];
 
         $this->validate($rules);
-        $miniaturaBase64 = $this->imagen;
+
         try {
             // $miniatura = $this->imagen->store('miniaturas', 'public');
             // $miniaturaPath = storage_path("app/public/{$miniatura}");

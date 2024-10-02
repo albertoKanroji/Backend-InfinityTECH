@@ -41,44 +41,27 @@ class RutinasControllerAPI extends Controller
         ]);
     }
     public function showEjercicios($id)
-{
-    // Buscar la rutina por su ID
-    $rutina = Rutinas::find($id);
+    {
+        // Buscar la rutina por su ID
+        $rutina = Rutinas::find($id);
 
-    // Verificar si la rutina existe
-    if (!$rutina) {
+        // Verificar si la rutina existe
+        if (!$rutina) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Rutina no encontrada'
+            ], 404); // Código de respuesta 404: Not Found
+        }
+
+        // Obtener todos los ejercicios asociados a la rutina
+        $ejercicios = $rutina->videos;
+
+        // Retornar los ejercicios como respuesta JSON
         return response()->json([
-            'success' => false,
-            'message' => 'Rutina no encontrada'
-        ], 404); // Código de respuesta 404: Not Found
+            'success' => true,
+            'data' => $ejercicios
+        ]);
     }
-
-    // Obtener los ejercicios junto con el campo 'dia' desde la tabla pivote
-    $ejercicios = $rutina->videos()->withPivot('dia')->get()->groupBy('pivot.dia');
-
-    // Definir el orden de los días
-    $diasOrdenados = [
-        'Lunes' => 1,
-        'Martes' => 2,
-        'Miércoles' => 3,
-        'Jueves' => 4,
-        'Viernes' => 5,
-        'Sábado' => 6,
-    ];
-
-    // Ordenar los ejercicios por los días de la semana
-    $ejerciciosOrdenados = collect($ejercicios)->sortBy(function($items, $dia) use ($diasOrdenados) {
-        return $diasOrdenados[$dia] ?? 7; // Asignar un valor alto para días no definidos
-    })->toArray(); // Convertir la colección ordenada a array
-
-    // Retornar los ejercicios agrupados y ordenados por día como respuesta JSON
-    return response()->json([
-        'success' => true,
-        'data' => $ejerciciosOrdenados
-    ]);
-}
-
-
     public function obtenerRutinasPersonalizadas($clienteId)
     {
         try {

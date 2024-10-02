@@ -197,7 +197,7 @@ class ClientesController extends Component
 
     try {
         $user = Customers::find($this->selected_id);
-        $IMC = $user->peso / ($user->altura * $user->altura);  // Asegúrate de que esta fórmula es correcta para calcular IMC
+        $IMC = $this->peso / ($this->altura * $this->altura);  // Asegúrate de que esta fórmula es correcta para calcular IMC
         $user->update([
             'nombre' => $this->nombre,
             'apellido' => $this->apellido,
@@ -226,22 +226,12 @@ class ClientesController extends Component
     ];
 
     public function destroy(Customers $user)
-{
-    try {
-        $user->seguimientoImagenes()->delete();
-        $user->rutinas()->detach();
-        $user->respuestas()->delete();
+    {
 
 
-        // Ahora elimina el registro principal
+
         $user->delete();
-
         $this->resetUI();
-        $this->emit('global-msg', 'Usuario Eliminado con éxito');
-    } catch (\Exception $e) {
-        // Si ocurre un error, emite un mensaje global de error
-        $this->emit('global-msg', 'Error al eliminar el usuario: ' . $e->getMessage());
+        $this->emit('user-deleted', 'Usuario Eliminado');
     }
-}
-
 }

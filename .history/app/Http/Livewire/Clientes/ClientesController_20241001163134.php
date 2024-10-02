@@ -157,47 +157,47 @@ class ClientesController extends Component
 
     public function Update()
 {
-    // $rules = [
-    //     'correo' => "required|email|unique:customers,correo,{$this->selected_id}",
-    //     'nombre' => 'required|min:3',
-    //     'apellido' => 'required|min:3',
-    //     'apellido2' => 'required|min:3',
-    //     'status' => 'required|not_in:Elegir',
-    //     'rutina' => 'required|min:3',
-    //     'profileIsComplete' => 'required|boolean',
-    //     'peso' => 'required|numeric|min:1',
-    //     'altura' => 'required|numeric|min:1',
-    // ];
+    $rules = [
+        'correo' => "required|email|unique:customers,correo,{$this->selected_id}",
+        'nombre' => 'required|min:3',
+        'apellido' => 'required|min:3',
+        'apellido2' => 'required|min:3',
+        'status' => 'required|not_in:Elegir',
+        'rutina' => 'required|min:3',
+        'profileIsComplete' => 'required|boolean',
+        'peso' => 'required|numeric|min:1',
+        'altura' => 'required|numeric|min:1',
+    ];
 
-    // $messages = [
-    //     'nombre.required' => 'Ingresa el nombre',
-    //     'nombre.min' => 'El nombre del usuario debe tener al menos 3 caracteres',
-    //     'apellido.required' => 'Ingresa el apellido',
-    //     'apellido.min' => 'El apellido debe tener al menos 3 caracteres',
-    //     'apellido2.required' => 'Ingresa el segundo apellido',
-    //     'apellido2.min' => 'El segundo apellido debe tener al menos 3 caracteres',
-    //     'correo.required' => 'Ingresa el correo',
-    //     'correo.email' => 'Ingresa un correo válido',
-    //     'correo.unique' => 'El email ya existe en el sistema',
-    //     'status.required' => 'Selecciona el estatus del usuario',
-    //     'status.not_in' => 'Selecciona el estatus',
-    //     'rutina.required' => 'Ingresa la rutina',
-    //     'rutina.min' => 'La rutina debe tener al menos 3 caracteres',
-    //     'profileIsComplete.required' => 'Selecciona si el perfil está completo',
-    //     'profileIsComplete.boolean' => 'Valor no válido para perfil completo',
-    //     'peso.required' => 'Ingresa el peso',
-    //     'peso.numeric' => 'El peso debe ser numérico',
-    //     'peso.min' => 'El peso debe ser mayor a 0',
-    //     'altura.required' => 'Ingresa la altura',
-    //     'altura.numeric' => 'La altura debe ser numérica',
-    //     'altura.min' => 'La altura debe ser mayor a 0',
-    // ];
+    $messages = [
+        'nombre.required' => 'Ingresa el nombre',
+        'nombre.min' => 'El nombre del usuario debe tener al menos 3 caracteres',
+        'apellido.required' => 'Ingresa el apellido',
+        'apellido.min' => 'El apellido debe tener al menos 3 caracteres',
+        'apellido2.required' => 'Ingresa el segundo apellido',
+        'apellido2.min' => 'El segundo apellido debe tener al menos 3 caracteres',
+        'correo.required' => 'Ingresa el correo',
+        'correo.email' => 'Ingresa un correo válido',
+        'correo.unique' => 'El email ya existe en el sistema',
+        'status.required' => 'Selecciona el estatus del usuario',
+        'status.not_in' => 'Selecciona el estatus',
+        'rutina.required' => 'Ingresa la rutina',
+        'rutina.min' => 'La rutina debe tener al menos 3 caracteres',
+        'profileIsComplete.required' => 'Selecciona si el perfil está completo',
+        'profileIsComplete.boolean' => 'Valor no válido para perfil completo',
+        'peso.required' => 'Ingresa el peso',
+        'peso.numeric' => 'El peso debe ser numérico',
+        'peso.min' => 'El peso debe ser mayor a 0',
+        'altura.required' => 'Ingresa la altura',
+        'altura.numeric' => 'La altura debe ser numérica',
+        'altura.min' => 'La altura debe ser mayor a 0',
+    ];
 
-    // $this->validate($rules, $messages);
+    $this->validate($rules, $messages);
 
     try {
         $user = Customers::find($this->selected_id);
-        $IMC = $user->peso / ($user->altura * $user->altura);  // Asegúrate de que esta fórmula es correcta para calcular IMC
+        $IMC = $this->peso / ($this->altura * $this->altura);  // Asegúrate de que esta fórmula es correcta para calcular IMC
         $user->update([
             'nombre' => $this->nombre,
             'apellido' => $this->apellido,
@@ -226,22 +226,12 @@ class ClientesController extends Component
     ];
 
     public function destroy(Customers $user)
-{
-    try {
-        $user->seguimientoImagenes()->delete();
-        $user->rutinas()->detach();
-        $user->respuestas()->delete();
+    {
 
 
-        // Ahora elimina el registro principal
+
         $user->delete();
-
         $this->resetUI();
-        $this->emit('global-msg', 'Usuario Eliminado con éxito');
-    } catch (\Exception $e) {
-        // Si ocurre un error, emite un mensaje global de error
-        $this->emit('global-msg', 'Error al eliminar el usuario: ' . $e->getMessage());
+        $this->emit('user-deleted', 'Usuario Eliminado');
     }
-}
-
 }
