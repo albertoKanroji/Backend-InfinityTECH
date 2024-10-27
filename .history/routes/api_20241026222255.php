@@ -35,7 +35,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/', [CustomersController::class, 'store'])->name('usuarios.store');
         Route::post('/store-images', [CustomersController::class, 'storeImages']);
         Route::get('/store-images/{id}/cliente', [CustomersController::class, 'listImages']);
-        Route::delete('/borrar/{customerId}/imagenes/{imageId}', [CustomersController::class, 'deleteImage']);
+        Route::delete('/del/{customerId}/imagenes/{imageId}', [CustomersController::class, 'deleteImage']);
 
         // Route::get('/{id}', [CustomersController::class, 'show'])->name('usuarios.show');
         // Route::put('/{id}', [CustomersController::class, 'update'])->name('usuarios.update');

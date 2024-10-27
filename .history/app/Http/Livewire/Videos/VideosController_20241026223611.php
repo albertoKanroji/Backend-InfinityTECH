@@ -79,7 +79,6 @@ class VideosController extends Component
         $this->video_url = '';
         $this->tags;
         $this->equipos;
-        $this->lesion;
         $this->selected_id = 0;
     }
     public function paginationView()
