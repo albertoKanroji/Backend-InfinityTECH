@@ -19,7 +19,6 @@ class ClientesController extends Component
     public $apellido2;
     public $correo;
     public $password;
-    public $sexo = 'Elegir';
     public $rutina;
     public $profileIsComplete = 0;
     public $peso;
@@ -58,7 +57,6 @@ class ClientesController extends Component
         $this->apellido2 = '';
         $this->correo = '';
         $this->password = '';
-        $this->sexo = 'Elegir';
         $this->rutina = '';
         $this->profileIsComplete = 0;
         $this->peso = '';
@@ -77,7 +75,6 @@ class ClientesController extends Component
         $this->apellido2 = $user->apellido2;
         $this->correo = $user->correo;
         $this->password = '';
-        $this->sexo = $user->sexo;
         $this->rutina = $user->rutina;
         $this->profileIsComplete = $user->profileIsComplete;
         $this->peso = $user->peso;
@@ -92,7 +89,6 @@ class ClientesController extends Component
             'apellido' => 'required|min:3',
             'apellido2' => 'required|min:3',
             'correo' => 'required|unique:customers|email',
-            'sexo' => 'required|not_in:Elegir',
             // 'rutina' => 'required|min:3',
             // 'profileIsComplete' => 'required|boolean',
             'peso' => 'required|numeric|min:1',
@@ -111,8 +107,7 @@ class ClientesController extends Component
             'correo.required' => 'Ingresa el correo',
             'correo.email' => 'Ingresa un correo válido',
             'correo.unique' => 'El email ya existe en el sistema',
-            'sexo.required' => 'Selecciona el esexo del usuario',
-            'sexo.not_in' => 'Selecciona el esexo',
+
             // 'rutina.required' => 'Ingresa la rutina',
             // 'rutina.min' => 'La rutina debe tener al menos 3 caracteres',
             // 'profileIsComplete.required' => 'Selecciona si el perfil está completo',
@@ -142,7 +137,6 @@ class ClientesController extends Component
             'apellido2' => $this->apellido2,
             'correo' => $this->correo,
             'password' => bcrypt($this->password),
-            'sexo' => $this->sexo,
             // 'rutina' => $this->rutina,
             // 'profileIsComplete' => $this->profileIsComplete,
             'peso' => $this->peso,
@@ -167,7 +161,6 @@ class ClientesController extends Component
                 'apellido2' => $this->apellido2,
                 'correo' => $this->correo,
                 'password' => strlen($this->password) > 0 ? bcrypt($this->password) : $user->password,
-                'sexo' => $this->sexo,
                 'rutina' => $this->rutina,
                 'profileIsComplete' => $this->profileIsComplete,
                 'peso' => $this->peso,

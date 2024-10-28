@@ -75,7 +75,6 @@ class TagsController extends Component
             $this->resetUI();
             $this->emit('user-added', 'Usuario Registrado');
         } catch (\Exception $e) {
-            dd($e);
             // Manejar la excepción (puedes personalizar este mensaje o realizar otras acciones)
             $this->emit('error', 'Ocurrió un error al registrar el usuario: ' . $e->getMessage());
         }

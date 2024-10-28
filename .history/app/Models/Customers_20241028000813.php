@@ -19,9 +19,7 @@ class Customers extends Model
         'profileIsComplete',
         'peso',
         'altura',
-        'IMC',
-        'sexo',
-        'fecha_embresia'
+        'IMC'
 
     ];
     public function rutinas()

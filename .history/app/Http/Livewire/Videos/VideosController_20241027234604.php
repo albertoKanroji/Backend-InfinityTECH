@@ -69,18 +69,17 @@ class VideosController extends Component
         $this->componentName = 'Videos';
     }
     public function resetUI()
-{
-    $this->nombre = '';
-    $this->miniatura = '';
-    $this->descripcion = '';
-    $this->gm_id = null;
-    $this->video_url = '';
-    $this->tags = []; // Asegúrate de resetear a un array vacío
-    $this->equipos = []; // Asegúrate de resetear a un array vacío
-    $this->lesion = '';
-    $this->selected_id = 0;
-}
-
+    {
+        $this->nombre = '';
+        $this->miniatura = '';
+        $this->descripcion = '';
+        $this->gm_id = null;
+        $this->video_url = '';
+        $this->tags;
+        $this->equipos;
+        $this->lesion = '';
+        $this->selected_id = 0;
+    }
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
@@ -178,7 +177,7 @@ class VideosController extends Component
 
         // Guardar los cambios
         $video->save();
-//dd($this->tags);
+dd($this->tags);
         // Sincronizar etiquetas y equipos
         $video->tags()->sync($this->tags);
         $video->equipos()->sync($this->equipos);

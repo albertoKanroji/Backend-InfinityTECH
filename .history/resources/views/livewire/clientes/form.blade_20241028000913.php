@@ -36,17 +36,7 @@
             @error('password') <span class="text-danger er">{{ $message}}</span>@enderror
         </div>
     </div>
-    <div class="col-sm-12 col-md-4">
-        <div class="form-group">
-            <label>Sexo</label>
-            <select wire:model.lazy="sexo" class="form-control">
-                <option value="Elegir" selected>Elegir</option>
-                <option value="Femenino">Femenino</option>
-                <option value="Masculino">Masculino</option>
-            </select>
-            @error('status') <span class="text-danger er">{{ $message}}</span>@enderror
-        </div>
-    </div>
+
     <!-- <div class="col-sm-12 col-md-4">
         <div class="form-group">
             <label>Rutina</label>

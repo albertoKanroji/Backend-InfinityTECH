@@ -69,18 +69,17 @@ class VideosController extends Component
         $this->componentName = 'Videos';
     }
     public function resetUI()
-{
-    $this->nombre = '';
-    $this->miniatura = '';
-    $this->descripcion = '';
-    $this->gm_id = null;
-    $this->video_url = '';
-    $this->tags = []; // Asegúrate de resetear a un array vacío
-    $this->equipos = []; // Asegúrate de resetear a un array vacío
-    $this->lesion = '';
-    $this->selected_id = 0;
-}
-
+    {
+        $this->nombre = '';
+        $this->miniatura = '';
+        $this->descripcion = '';
+        $this->gm_id = null;
+        $this->video_url = '';
+        $this->tags;
+        $this->equipos;
+        $this->lesion = '';
+        $this->selected_id = 0;
+    }
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
@@ -172,16 +171,21 @@ class VideosController extends Component
                 $video->miniatura = base64_encode($miniaturaData);
             }
 
-            // Recargar tags y equipos si están vacíos
-        $this->tags = $this->tags ?: $video->tags->pluck('id')->toArray();
-        $this->equipos = $this->equipos ?: $video->equipos->pluck('id')->toArray();
+            // Si no hay cambios en $this->tags o $this->equipos, asigna los valores actuales
+            if (empty($this->tags)) {
+                $this->tags = $video->tags->pluck('id')->toArray();
+            }
+            if (empty($this->equipos)) {
+                $this->equipos = $video->equipos->pluck('id')->toArray();
+            }
 
-        // Guardar los cambios
-        $video->save();
-//dd($this->tags);
-        // Sincronizar etiquetas y equipos
-        $video->tags()->sync($this->tags);
-        $video->equipos()->sync($this->equipos);
+            // Guardar los cambios
+
+
+            // Sincronizar etiquetas y equipos
+            $video->tags()->sync($this->tags);
+            $video->equipos()->sync($this->equipos);
+$video->save();
             $this->resetUI();
             $this->emit('video-updated', 'Video Actualizado');
         } catch (\Exception $e) {
