@@ -12,7 +12,6 @@ use App\Http\Livewire\Clientes\ClientesController;
 use App\Http\Livewire\Videos\VideosController;
 use App\Http\Livewire\GruposMusculares\GruposMuscularesController;
 use App\Http\Livewire\Equipo\EquipoController;
-use App\Http\Livewire\Logs\LogsController;
 use App\Http\Livewire\Tags\TagsController;
 use App\Http\Livewire\Rutinas\RutinasController;
 use App\Http\Livewire\RutinasPersonalizadas\RPController;
@@ -33,7 +32,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('clientes', ClientesController::class);
-    Route::get('logs', LogsController::class);
     Route::get('videos', VideosController::class);
     Route::get('gruposM', GruposMuscularesController::class);
     Route::get('tags', TagsController::class);
