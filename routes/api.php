@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
@@ -58,6 +59,10 @@ Route::prefix('v1')->group(function () {
     Route::prefix('tags')->group(function () {
 
         Route::get('/', [GruposMuscularesControllerlAPI::class, 'getTags']);
+    });
+    Route::prefix('historial')->group(function () {
+
+        Route::post('/guardar-accion', [LogController::class, 'store']);
     });
     Route::prefix('grupos-musculares')->group(function () {
 

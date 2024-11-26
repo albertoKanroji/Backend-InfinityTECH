@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomersController;
@@ -26,7 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
 
-    Route::prefix('')->group(function () {
+    Route::prefix('usuarios')->group(function () {
         Route::get('/customer-data', [CustomersController::class, 'getData']);
         //  Route::get('/', [CustomersController::class, 'index'])->name('usuarios.index');
         Route::put('/update/{id}', [CustomersController::class, 'update']);
@@ -35,6 +36,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/', [CustomersController::class, 'store'])->name('usuarios.store');
         Route::post('/store-images', [CustomersController::class, 'storeImages']);
         Route::get('/store-images/{id}/cliente', [CustomersController::class, 'listImages']);
+        Route::delete('/borrar/{customerId}/imagenes/{imageId}', [CustomersController::class, 'deleteImage']);
+
         // Route::get('/{id}', [CustomersController::class, 'show'])->name('usuarios.show');
         // Route::put('/{id}', [CustomersController::class, 'update'])->name('usuarios.update');
         // Route::delete('/{id}', [CustomersController::class, 'destroy'])->name('usuarios.destroy');
@@ -56,6 +59,10 @@ Route::prefix('v1')->group(function () {
     Route::prefix('tags')->group(function () {
 
         Route::get('/', [GruposMuscularesControllerlAPI::class, 'getTags']);
+    });
+    Route::prefix('historial')->group(function () {
+
+        Route::post('/guardar-accion', [LogController::class, 'store']);
     });
     Route::prefix('grupos-musculares')->group(function () {
 

@@ -135,7 +135,6 @@ class PreguntasControllerAPI extends Controller
 
             return response()->json([
                 'message' => 'Respuestas guardadas exitosamente',
-                'puntaje'=>$puntajeTotal,
                 'rutina_asignada' => $rutinaSeleccionada // Devolver la rutina asignada al cliente
             ], 200);
         } catch (Exception $e) {

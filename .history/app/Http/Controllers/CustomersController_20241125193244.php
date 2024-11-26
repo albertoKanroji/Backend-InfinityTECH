@@ -90,11 +90,11 @@ class CustomersController extends Controller
                     'success' => false,
                     'status' => 401,
                     'message' => 'Credenciales inválidas',
-                    'data' => null
+                    'data' => $cliente
                 ], 401);
             }
 
-            // Si las credenciales son válidas, generar un token para el cliente
+            // regSi las credenciales son válidas, generar un token para el cliente
             $token = $this->generateToken($cliente);
 
             // Devolver la respuesta con el token y los datos del cliente
@@ -228,57 +228,57 @@ class CustomersController extends Controller
     }
 
     public function storeImages(Request $request)
-{
-    // Validación del request
-    $validator = Validator::make($request->all(), [
-        'customer_id' => 'required|exists:customers,id', // Verifica que el customer_id exista
-        'images' => 'required|array',                   // Asegura que 'images' sea un array
-        'images.*.image' => 'required|string',          // Cada imagen debe ser una cadena en Base64
-        'images.*.peso' => 'nullable|string',           // El peso es opcional y debe ser una cadena
-        'images.*.comentarios' => 'nullable|string'     // Los comentarios son opcionales y deben ser una cadena
-    ]);
+    {
+        // Validación del request
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required|exists:customers,id', // Verifica que el customer_id exista
+            'images' => 'required|array',                   // Asegura que 'images' sea un array
+            'images.*.image' => 'required|string',          // Cada imagen debe ser una cadena en Base64
+            'images.*.peso' => 'nullable|numeric',           // El peso es opcional y debe ser una cadena
+            'images.*.comentarios' => 'nullable|string'     // Los comentarios son opcionales y deben ser una cadena
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'status' => 422,
-            'message' => 'Error de validación',
-            'data' => $validator->errors()
-        ], 422);
-    }
-
-    try {
-        $customerId = $request->input('customer_id');
-        $images = $request->input('images');
-
-        // Guardar cada imagen en la tabla seguimiento_clientes_imagenes
-        foreach ($images as $imageData) {
-            $imagen = new SeguimientoClientesImagenes();
-            $imagen->customers_id = $customerId;
-            $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
-
-            // Guardar los campos opcionales
-            $imagen->peso = $imageData['peso'] ?? null;
-            $imagen->comentarios = $imageData['comentarios'] ?? null;
-            $imagen->save();
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'status' => 422,
+                'message' => 'Error de validación',
+                'data' => $validator->errors()
+            ], 422);
         }
 
-        // Excluir datos binarios de la respuesta
-        return response()->json([
-            'success' => true,
-            'status' => 201,
-            'message' => 'Imágenes guardadas correctamente',
-            'data' => null // Asegurarse de que no se incluyen datos binarios en la respuesta
-        ], 201);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'status' => 500,
-            'message' => 'Error al guardar imágenes: ' . $e->getMessage(),
-            'data' => null
-        ], 500);
+        try {
+            $customerId = $request->input('customer_id');
+            $images = $request->input('images');
+
+            // Guardar cada imagen en la tabla seguimiento_clientes_imagenes
+            foreach ($images as $imageData) {
+                $imagen = new SeguimientoClientesImagenes();
+                $imagen->customers_id = $customerId;
+                $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
+
+                // Guardar los campos opcionales
+                $imagen->peso = $imageData['peso'] ?? null;
+                $imagen->comentarios = $imageData['comentarios'] ?? null;
+                $imagen->save();
+            }
+
+            // Excluir datos binarios de la respuesta
+            return response()->json([
+                'success' => true,
+                'status' => 201,
+                'message' => 'Imágenes guardadas correctamente',
+                'data' => null // Asegurarse de que no se incluyen datos binarios en la respuesta
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'status' => 500,
+                'message' => 'Error al guardar imágenes: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
     }
-}
 
     public function listImages($customerId)
     {
@@ -297,9 +297,15 @@ class CustomersController extends Controller
             // Obtener las imágenes asociadas al cliente
             $imagenes = SeguimientoClientesImagenes::where('customers_id', $customerId)->get();
 
-            // Convertir las imágenes a formato Base64
+            // Convertir las imágenes a formato Base64 e incluir peso y comentarios
             $imagenesBase64 = $imagenes->map(function ($imagen) {
-                return base64_encode($imagen->image);
+                return [
+                    'id' => $imagen->id,
+                    'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
+                    'peso' => $imagen->peso,                  // Incluir el peso
+                    'comentarios' => $imagen->comentarios,
+                    'created_at' => $imagen->created_at      // Incluir los comentarios
+                ];
             });
 
             return response()->json([
@@ -313,6 +319,52 @@ class CustomersController extends Controller
                 'success' => false,
                 'status' => 500,
                 'message' => 'Error al obtener las imágenes: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
+    public function deleteImage($customerId, $imageId)
+    {
+        try {
+            // Verificar si el cliente existe
+            $cliente = Customers::find($customerId);
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 404,
+                    'message' => 'Cliente no encontrado',
+                    'data' => null
+                ], 404);
+            }
+
+            // Buscar la imagen específica del cliente
+            $imagen = SeguimientoClientesImagenes::where('customers_id', $customerId)
+                ->where('id', $imageId)
+                ->first();
+            if (!$imagen) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 404,
+                    'message' => 'Imagen no encontrada',
+                    'data' => null
+                ], 404);
+            }
+
+            // Eliminar la imagen
+            $imagen->delete();
+
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => 'Imagen eliminada correctamente',
+                'data' => null
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'status' => 500,
+                'message' => 'Error al eliminar la imagen: ' . $e->getMessage(),
                 'data' => null
             ], 500);
         }

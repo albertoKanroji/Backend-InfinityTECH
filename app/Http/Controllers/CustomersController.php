@@ -90,11 +90,11 @@ class CustomersController extends Controller
                     'success' => false,
                     'status' => 401,
                     'message' => 'Credenciales inválidas',
-                    'data' => null
+                    'data' => $cliente
                 ], 401);
             }
 
-            // Si las credenciales son válidas, generar un token para el cliente
+            // regSi las credenciales son válidas, generar un token para el cliente
             $token = $this->generateToken($cliente);
 
             // Devolver la respuesta con el token y los datos del cliente

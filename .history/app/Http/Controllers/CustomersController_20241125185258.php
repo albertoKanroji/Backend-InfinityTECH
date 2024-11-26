@@ -90,7 +90,7 @@ class CustomersController extends Controller
                     'success' => false,
                     'status' => 401,
                     'message' => 'Credenciales inválidas',
-                    'data' => null
+                    'data' => $cliente
                 ], 401);
             }
 
@@ -300,10 +300,10 @@ class CustomersController extends Controller
             // Convertir las imágenes a formato Base64 e incluir peso y comentarios
             $imagenesBase64 = $imagenes->map(function ($imagen) {
                 return [
-                    'id'=>$imagen->id,
+                    'id' => $imagen->id,
                     'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
                     'peso' => $imagen->peso,                  // Incluir el peso
-                    'comentarios' => $imagen->comentarios ,
+                    'comentarios' => $imagen->comentarios,
                     'created_at' => $imagen->created_at      // Incluir los comentarios
                 ];
             });
@@ -319,6 +319,52 @@ class CustomersController extends Controller
                 'success' => false,
                 'status' => 500,
                 'message' => 'Error al obtener las imágenes: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
+    public function deleteImage($customerId, $imageId)
+    {
+        try {
+            // Verificar si el cliente existe
+            $cliente = Customers::find($customerId);
+            if (!$cliente) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 404,
+                    'message' => 'Cliente no encontrado',
+                    'data' => null
+                ], 404);
+            }
+
+            // Buscar la imagen específica del cliente
+            $imagen = SeguimientoClientesImagenes::where('customers_id', $customerId)
+                ->where('id', $imageId)
+                ->first();
+            if (!$imagen) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 404,
+                    'message' => 'Imagen no encontrada',
+                    'data' => null
+                ], 404);
+            }
+
+            // Eliminar la imagen
+            $imagen->delete();
+
+            return response()->json([
+                'success' => true,
+                'status' => 200,
+                'message' => 'Imagen eliminada correctamente',
+                'data' => null
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'status' => 500,
+                'message' => 'Error al eliminar la imagen: ' . $e->getMessage(),
                 'data' => null
             ], 500);
         }
