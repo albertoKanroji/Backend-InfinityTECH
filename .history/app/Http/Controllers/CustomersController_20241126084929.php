@@ -90,11 +90,11 @@ class CustomersController extends Controller
                     'success' => false,
                     'status' => 401,
                     'message' => 'Credenciales inválidas',
-                    'data' => null
+                    'data' => $cliente
                 ], 401);
             }
 
-            // Si las credenciales son válidas, generar un token para el cliente
+            // regSi las credenciales son válidas, generar un token para el cliente
             $token = $this->generateToken($cliente);
 
             // Devolver la respuesta con el token y los datos del cliente
@@ -253,9 +253,19 @@ class CustomersController extends Controller
 
             // Guardar cada imagen en la tabla seguimiento_clientes_imagenes
             foreach ($images as $imageData) {
+                $decodedImage = base64_decode($imageData['image'], true);
+                if ($decodedImage === false) {
+                    //throw new \Exception('La imagen no es válida en formato Base64');
+                    return response()->json([
+                        'success' => false,
+                        'status' => 500,
+                        'message' => 'La imagen no es válida en formato Base64',
+                        'data' => null
+                    ], 500);
+                }
                 $imagen = new SeguimientoClientesImagenes();
                 $imagen->customers_id = $customerId;
-                $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
+              //  $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
 
                 // Guardar los campos opcionales
                 $imagen->peso = $imageData['peso'] ?? null;

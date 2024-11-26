@@ -265,7 +265,7 @@ class CustomersController extends Controller
                 }
                 $imagen = new SeguimientoClientesImagenes();
                 $imagen->customers_id = $customerId;
-              $imagen->image = $imageData['image']; // Decodificar Base64 a binario
+                $imagen->image = base64_decode($imageData['image']); // Decodificar Base64 a binario
 
                 // Guardar los campos opcionales
                 $imagen->peso = $imageData['peso'] ?? null;
@@ -311,7 +311,7 @@ class CustomersController extends Controller
             $imagenesBase64 = $imagenes->map(function ($imagen) {
                 return [
                     'id' => $imagen->id,
-                    'image' =>$imagen->image, // Codificar la imagen en Base64
+                    'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
                     'peso' => $imagen->peso,                  // Incluir el peso
                     'comentarios' => $imagen->comentarios,
                     'created_at' => $imagen->created_at      // Incluir los comentarios

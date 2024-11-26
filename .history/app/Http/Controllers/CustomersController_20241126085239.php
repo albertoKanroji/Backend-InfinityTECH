@@ -311,7 +311,7 @@ class CustomersController extends Controller
             $imagenesBase64 = $imagenes->map(function ($imagen) {
                 return [
                     'id' => $imagen->id,
-                    'image' =>$imagen->image, // Codificar la imagen en Base64
+                    'image' => base64_encode($imagen->image), // Codificar la imagen en Base64
                     'peso' => $imagen->peso,                  // Incluir el peso
                     'comentarios' => $imagen->comentarios,
                     'created_at' => $imagen->created_at      // Incluir los comentarios

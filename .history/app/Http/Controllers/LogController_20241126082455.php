@@ -13,7 +13,9 @@ class LogController extends Controller
         $validator = Validator::make($request->all(), [
             'accion' => 'required|string',
             'contenido' => 'required|string',
-            'usuario' => 'required|numeric', // Aseguramos que sea un número
+            'usuario' => 'required',
+
+
         ]);
 
         if ($validator->fails()) {
@@ -26,15 +28,12 @@ class LogController extends Controller
         }
 
         try {
-            // Convertir el campo usuario a entero
             $usuarioData = $request->all();
-            $usuarioData['usuario'] = (int) $usuarioData['usuario']; // Conversión a entero
-
             $usuario = Logs::create($usuarioData);
             return response()->json([
                 'success' => true,
                 'status' => 201,
-                'message' => 'Log guardado correctamente',
+                'message' => 'Logs guardafo correctamente',
                 'data' => $usuario
             ], 201);
         } catch (\Illuminate\Database\QueryException $e) {
@@ -55,5 +54,4 @@ class LogController extends Controller
             ]);
         }
     }
-
 }
