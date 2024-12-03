@@ -18,7 +18,10 @@ class Rutinas extends Model
         'tipo',
         'max_puntaje',
         'min_puntaje',
-        'estado'
+        'estado',
+        'nivel',
+        'repeticiones',
+        'sexo'
 
 
 

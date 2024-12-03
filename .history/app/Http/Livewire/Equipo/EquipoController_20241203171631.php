@@ -119,18 +119,18 @@ class EquipoController extends Component
 
     // Verificar si el equipo existe
     if (!$user) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
+        $this->emit('error', 'El equipo no fue encontrado.');
         return;
     }
 
     // Verificar si el equipo tiene relaciones con videos o grupos musculares
     if ($user->videos()->exists()) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
+        $this->emit('error', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
         return;
     }
 
     if ($user->gruposMusculares()->exists()) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más grupos musculares.');
+        $this->emit('error', 'No se puede eliminar: el equipo está asociado a uno o más grupos musculares.');
         return;
     }
 

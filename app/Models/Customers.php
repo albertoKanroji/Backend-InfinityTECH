@@ -21,7 +21,8 @@ class Customers extends Model
         'altura',
         'IMC',
         'sexo',
-        'fecha_embresia'
+        'fecha_embresia',
+        'nivel'
 
     ];
     public function rutinas()

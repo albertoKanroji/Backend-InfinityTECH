@@ -20,6 +20,7 @@ class VideosController extends Component
     public $selected_id;
     public $search;
     public $tags;
+    public $lesion;
     public $equipos;
     use WithPagination;
     use WithFileUploads;
@@ -32,10 +33,10 @@ class VideosController extends Component
         'descripcion' => 'required|min:3',
         'gm_id' => 'required|exists:grupos_musculares,id',
         'video_url' => 'required|url',
-        'tags' => 'nullable|array',
-        'tags.*' => 'exists:tags,id',
-        'equipos' => 'nullable|array',
-        'equipos.*' => 'exists:equipos,id'
+        'tags' => 'required',
+
+        'equipos' => 'required',
+
     ];
 
     protected $messages = [
@@ -49,10 +50,8 @@ class VideosController extends Component
         'gm_id.exists' => 'Grupo muscular no válido',
         'video_url.required' => 'Ingresa la URL del video',
         'video_url.url' => 'Ingresa una URL válida',
-        'tags.array' => 'Las etiquetas deben ser un array',
-        'tags.*.exists' => 'Etiqueta no válida',
-        'equipos.array' => 'Los equipos deben ser un array',
-        'equipos.*.exists' => 'Equipo no válido'
+        'tags.required' => 'Las etiquetas deben ser un array',
+        'equipos.required' => 'Los equipos deben ser un array',
     ];
     public function mount()
     {
@@ -76,10 +75,12 @@ class VideosController extends Component
         $this->descripcion = '';
         $this->gm_id = null;
         $this->video_url = '';
-        $this->tags;
-        $this->equipos;
+        $this->tags = []; // Asegúrate de resetear a un array vacío
+        $this->equipos = []; // Asegúrate de resetear a un array vacío
+        $this->lesion = '';
         $this->selected_id = 0;
     }
+
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
@@ -142,6 +143,7 @@ class VideosController extends Component
         $this->descripcion = $video->descripcion;
         $this->gm_id = $video->gm_id;
         $this->video_url = $video->video_url;
+        $this->lesion = $video->lesion;
         $this->tags = $video->tags->pluck('id')->toArray(); // Cargar IDs de tags
         $this->equipos = $video->equipos->pluck('id')->toArray();
 
@@ -149,43 +151,43 @@ class VideosController extends Component
     }
     public function Update()
     {
-        // $this->validate();
+        // Validación
+        $this->validate();
 
-        $video = GruposMuscularesVideos::find($this->selected_id);
+        try {
+            $video = GruposMuscularesVideos::findOrFail($this->selected_id);
 
-        $data = [
-            'nombre' => $this->nombre,
-            'descripcion' => $this->descripcion,
-            'gm_id' => $this->gm_id,
-            'video_url' => $this->video_url
-        ];
+            // Actualizar los datos básicos
+            $video->update([
+                'nombre' => $this->nombre,
+                'descripcion' => $this->descripcion,
+                'gm_id' => $this->gm_id,
+                'video_url' => $this->video_url,
+                'lesion' => $this->lesion,
+            ]);
+            dd($this->tags);
+            if ($this->miniatura instanceof \Livewire\TemporaryUploadedFile) {
+                $miniaturaPath = $this->miniatura->store('miniaturas', 'public');
+                $miniaturaData = file_get_contents(storage_path("app/public/{$miniaturaPath}"));
+                $video->miniatura = base64_encode($miniaturaData);
+            }
 
-        // Verifica si se ha seleccionado una nueva miniatura
-        if ($this->miniatura instanceof \Livewire\TemporaryUploadedFile) {
-            $miniatura = $this->miniatura->store('miniaturas', 'public');
-            $miniaturaPath = storage_path("app/public/{$miniatura}");
-            $miniaturaData = file_get_contents($miniaturaPath);
-            $miniaturaBase64 = base64_encode($miniaturaData);
+            // Recargar tags y equipos si están vacíos
+            $this->tags = $this->tags ?: $video->tags->pluck('id')->toArray();
+            $this->equipos = $this->equipos ?: $video->equipos->pluck('id')->toArray();
+
+            // Guardar los cambios
+            $video->save();
+            //dd($this->tags);
+            // Sincronizar etiquetas y equipos
+            $video->tags()->sync($this->tags);
+            $video->equipos()->sync($this->equipos);
+            $this->resetUI();
+            $this->emit('video-updated', 'Video Actualizado');
+        } catch (\Exception $e) {
+            // Emitir mensaje de error
+            $this->emit('video-updated', 'Error al actualizar el video');
         }
-
-        $video->update($data);
-
-        // Sincroniza las etiquetas
-        if (!empty($this->tags)) {
-            $video->tags()->sync([$this->tags]);
-        } else {
-            $video->tags()->detach();
-        }
-
-        // Sincroniza los equipos
-        if (!empty($this->equipos)) {
-            $video->equipos()->sync([$this->equipos]);
-        } else {
-            $video->equipos()->detach();
-        }
-
-        $this->resetUI();
-        $this->emit('video-updated', 'Video Actualizado');
     }
 
 

@@ -112,32 +112,23 @@ class EquipoController extends Component
 
     ];
 
-    public function destroy($id)
-{
-    // Buscar el equipo por su ID
-    $user = Equipo::find($id);
+    public function destroy(Equipo $user)
+    {
+       // dd($user);
+        // Verificar si el equipo tiene relaciones con videos o grupos musculares
+        if ($user->videos()->exists()) {
+            $this->emit('error', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
+            return;
+        }
 
-    // Verificar si el equipo existe
-    if (!$user) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
-        return;
+        if ($user->gruposMusculares()->exists()) {
+            $this->emit('error', 'No se puede eliminar: el equipo está asociado a uno o más grupos musculares.');
+            return;
+        }
+
+        // Si no tiene relaciones, se puede eliminar
+        $user->delete();
+        $this->resetUI();
+        $this->emit('user-deleted', 'Usuario Eliminado');
     }
-
-    // Verificar si el equipo tiene relaciones con videos o grupos musculares
-    if ($user->videos()->exists()) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
-        return;
-    }
-
-    if ($user->gruposMusculares()->exists()) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más grupos musculares.');
-        return;
-    }
-
-    // Si no tiene relaciones, se puede eliminar
-    $user->delete();
-    $this->resetUI();
-    $this->emit('user-deleted', 'Usuario Eliminado');
-}
-
 }

@@ -69,17 +69,17 @@ class VideosController extends Component
         $this->componentName = 'Videos';
     }
     public function resetUI()
-{
-    $this->nombre = '';
-    $this->miniatura = '';
-    $this->descripcion = '';
-    $this->gm_id = null;
-    $this->video_url = '';
-    $this->tags = []; // Asegúrate de resetear a un array vacío
-    $this->equipos = []; // Asegúrate de resetear a un array vacío
-    $this->lesion = '';
-    $this->selected_id = 0;
-}
+    {
+        $this->nombre = '';
+        $this->miniatura = '';
+        $this->descripcion = '';
+        $this->gm_id = null;
+        $this->video_url = '';
+        $this->tags = []; // Asegúrate de resetear a un array vacío
+        $this->equipos = []; // Asegúrate de resetear a un array vacío
+        $this->lesion = '';
+        $this->selected_id = 0;
+    }
 
     public function paginationView()
     {
@@ -165,7 +165,7 @@ class VideosController extends Component
                 'video_url' => $this->video_url,
                 'lesion' => $this->lesion,
             ]);
-
+           // dd($this->tags);
             if ($this->miniatura instanceof \Livewire\TemporaryUploadedFile) {
                 $miniaturaPath = $this->miniatura->store('miniaturas', 'public');
                 $miniaturaData = file_get_contents(storage_path("app/public/{$miniaturaPath}"));
@@ -173,19 +173,20 @@ class VideosController extends Component
             }
 
             // Recargar tags y equipos si están vacíos
-        $this->tags = $this->tags ?: $video->tags->pluck('id')->toArray();
-        $this->equipos = $this->equipos ?: $video->equipos->pluck('id')->toArray();
+            $this->tags = $this->tags ?: $video->tags->pluck('id')->toArray();
+            $this->equipos = $this->equipos ?: $video->equipos->pluck('id')->toArray();
 
-        // Guardar los cambios
-        $video->save();
-//dd($this->tags);
-        // Sincronizar etiquetas y equipos
-        $video->tags()->sync($this->tags);
-        $video->equipos()->sync($this->equipos);
+            // Guardar los cambios
+            $video->save();
+            //dd($this->tags);
+            // Sincronizar etiquetas y equipos
+            $video->tags()->sync($this->tags);
+            $video->equipos()->sync($this->equipos);
             $this->resetUI();
             $this->emit('video-updated', 'Video Actualizado');
         } catch (\Exception $e) {
             // Emitir mensaje de error
+            dd($e);
             $this->emit('video-updated', 'Error al actualizar el video');
         }
     }

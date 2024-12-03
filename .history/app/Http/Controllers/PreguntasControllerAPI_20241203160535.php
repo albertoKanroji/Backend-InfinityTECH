@@ -39,7 +39,6 @@ class PreguntasControllerAPI extends Controller
             $userId = $request->input('userId');
             $respuestasData = $request->input('respuestas');
             $puntaje = $request->input('puntaje');
-
             // Buscar el cliente por su ID
             $cliente = Customers::find($userId);
 
@@ -55,6 +54,10 @@ class PreguntasControllerAPI extends Controller
                 $respuesta->customers_id = $userId;
                 $respuesta->save();
             }
+            $cliente->rutina = 'personalizada';
+            $cliente->save();
+
+
 
             // Asignar nivel basado en el puntaje total y el género
             $nivel = null;
@@ -85,25 +88,10 @@ class PreguntasControllerAPI extends Controller
             $cliente->nivel = $nivel;
             $cliente->save();
 
-            // Buscar y asignar la rutina adecuada basada en el nivel y el género
-            $rutina = Rutinas::where('nivel', $nivel)
-                ->where('sexo', $genero)
-
-                ->first();
-
-            if ($rutina) {
-                // Relacionar la rutina con el cliente
-                $cliente->rutinas()->syncWithoutDetaching([$rutina->id]);
-                Log::info('Rutina asignada: ' . $rutina->nombre);
-            } else {
-                Log::warning('No se encontró una rutina para el nivel ' . $nivel . ' y género ' . $genero);
-            }
-
             return response()->json([
                 'message' => 'Respuestas guardadas exitosamente',
                 'puntaje' => $puntaje,
-                'nivel_asignado' => $nivel,
-                'rutina_asignada' => $rutina ? $rutina->nombre : 'No se encontró rutina'
+                'nivel_asignado' => $nivel
             ], 200);
         } catch (Exception $e) {
             // Registrar el error en el log de la aplicación

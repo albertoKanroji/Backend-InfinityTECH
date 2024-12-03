@@ -15,12 +15,14 @@ class Customers extends Model
         'apellido2',
         'correo',
         'password',
-        'status',
         'rutina',
         'profileIsComplete',
         'peso',
         'altura',
-        'IMC'
+        'IMC',
+        'sexo',
+        'fecha_embresia',
+        'nivel'
 
     ];
     public function rutinas()

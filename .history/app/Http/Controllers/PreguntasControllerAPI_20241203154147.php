@@ -38,16 +38,15 @@ class PreguntasControllerAPI extends Controller
         try {
             $userId = $request->input('userId');
             $respuestasData = $request->input('respuestas');
-            $puntaje = $request->input('puntaje');
-
             // Buscar el cliente por su ID
             $cliente = Customers::find($userId);
 
             if (!$cliente) {
                 return response()->json(['message' => 'Cliente no encontrado'], 404);
             }
-
-            // Guardar las respuestas
+            // if ($cliente->profileIsComplete == 'no') {
+            //     return response()->json(['message' => 'Primero complete su perfil'], 400);
+            // }
             foreach ($respuestasData as $respuestaData) {
                 $respuesta = new Respuesta();
                 $respuesta->preguntas_id = $respuestaData['preguntaId'];
@@ -55,55 +54,33 @@ class PreguntasControllerAPI extends Controller
                 $respuesta->customers_id = $userId;
                 $respuesta->save();
             }
-
-            // Asignar nivel basado en el puntaje total y el género
-            $nivel = null;
-            $genero = $cliente->sexo; // Asegúrate de que el modelo `Customers` tenga este atributo
-
-            if ($genero === 'Hombre') {
-                if ($puntaje >= 17 && $puntaje <= 120) {
-                    $nivel = 'Principiante';
-                } elseif ($puntaje >= 121 && $puntaje <= 200) {
-                    $nivel = 'Intermedio';
-                } elseif ($puntaje > 200) {
-                    $nivel = 'Avanzado';
-                }
-            } elseif ($genero === 'Mujer') {
-                if ($puntaje >= 550 && $puntaje <= 620) {
-                    $nivel = 'Principiante';
-                } elseif ($puntaje >= 621 && $puntaje <= 700) {
-                    $nivel = 'Intermedio';
-                } elseif ($puntaje > 700) {
-                    $nivel = 'Avanzado';
-                }
-            }
-
-            Log::info('Puntaje total: ' . $puntaje);
-            Log::info('Nivel asignado: ' . $nivel);
-
-            // Actualizar el nivel del cliente
-            $cliente->nivel = $nivel;
+            $cliente->rutina = 'personalizada';
             $cliente->save();
-
-            // Buscar y asignar la rutina adecuada basada en el nivel y el género
-            $rutina = Rutinas::where('nivel', $nivel)
-                ->where('sexo', $genero)
-
-                ->first();
-
-            if ($rutina) {
-                // Relacionar la rutina con el cliente
-                $cliente->rutinas()->syncWithoutDetaching([$rutina->id]);
-                Log::info('Rutina asignada: ' . $rutina->nombre);
-            } else {
-                Log::warning('No se encontró una rutina para el nivel ' . $nivel . ' y género ' . $genero);
+            $puntajeTotal = 0;
+            foreach ($request->input('respuestas') as $respuesta) {
+                $opcion = RespuestaOpcion::find($respuesta['respuestaValor']);
+                if ($opcion) {
+                    $puntajeTotal += $opcion->valor;
+                }
             }
+
+
+            // Seleccionar la rutina adecuada
+
+            // Inicializa la rutina seleccionada como nula
+            $rutinaSeleccionada = null;
+            Log::info('Puntaje total: ' . $puntajeTotal);
+
+            // Recorre todas las rutinas y verifica si el puntaje total está dentro del rango de puntaje de cada rutina
+
+
+
+
 
             return response()->json([
                 'message' => 'Respuestas guardadas exitosamente',
-                'puntaje' => $puntaje,
-                'nivel_asignado' => $nivel,
-                'rutina_asignada' => $rutina ? $rutina->nombre : 'No se encontró rutina'
+                'puntaje'=>$puntajeTotal,
+                'rutina_asignada' => $rutinaSeleccionada // Devolver la rutina asignada al cliente
             ], 200);
         } catch (Exception $e) {
             // Registrar el error en el log de la aplicación
@@ -111,6 +88,7 @@ class PreguntasControllerAPI extends Controller
 
             // Retornar una respuesta de error en formato JSON
             return response()->json([
+                // 'error' => 'Error al guardar las respuestas',
                 'message' => $e->getMessage()
             ], 500);
         }

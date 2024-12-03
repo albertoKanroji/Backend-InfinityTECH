@@ -119,7 +119,7 @@ class EquipoController extends Component
 
     // Verificar si el equipo existe
     if (!$user) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
+        $this->emit('global-msg', 'El equipo no fue encontrado.');
         return;
     }
 

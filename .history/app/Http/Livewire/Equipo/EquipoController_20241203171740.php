@@ -117,11 +117,11 @@ class EquipoController extends Component
     // Buscar el equipo por su ID
     $user = Equipo::find($id);
 
-    // Verificar si el equipo existe
-    if (!$user) {
-        $this->emit('global-msg', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
-        return;
-    }
+    // // Verificar si el equipo existe
+    // if (!$user) {
+    //     $this->emit('global-msg', 'El equipo no fue encontrado.');
+    //     return;
+    // }
 
     // Verificar si el equipo tiene relaciones con videos o grupos musculares
     if ($user->videos()->exists()) {

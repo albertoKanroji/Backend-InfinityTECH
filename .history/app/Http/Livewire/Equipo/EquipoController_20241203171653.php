@@ -18,15 +18,15 @@ class EquipoController extends Component
     public $pageTitle, $componentName;
     public $selected_id;
     public function render()
-{
-    // Obtener los equipos únicos por nombre y paginarlos
-    $tags = Equipo::select('nombre')->distinct()->paginate($this->pagination);
+    {
+        // Obtener los equipos únicos por nombre y paginarlos
+        $tags = Equipo::select('nombre')->distinct()->paginate($this->pagination);
 
-    return view('livewire.equipo.equipo-controller', [
-        'tags' => $tags
-    ])->extends('layouts.theme.app')
-        ->section('content');
-}
+        return view('livewire.equipo.equipo-controller', [
+            'tags' => $tags
+        ])->extends('layouts.theme.app')
+            ->section('content');
+    }
 
     public function mount()
     {
@@ -112,13 +112,32 @@ class EquipoController extends Component
 
     ];
 
-    public function destroy(Equipo $user)
-    {
+    public function destroy($id)
+{
+    // Buscar el equipo por su ID
+    $user = Equipo::find($id);
 
-
-
-        $user->delete();
-        $this->resetUI();
-        $this->emit('user-deleted', 'Usuario Eliminado');
+    // Verificar si el equipo existe
+    if (!$user) {
+        $this->emit('user-deleted', 'El equipo no fue encontrado.');
+        return;
     }
+
+    // Verificar si el equipo tiene relaciones con videos o grupos musculares
+    if ($user->videos()->exists()) {
+        $this->emit('user-deleted', 'No se puede eliminar: el equipo está asociado a uno o más videos.');
+        return;
+    }
+
+    if ($user->gruposMusculares()->exists()) {
+        $this->emit('user-deleted', 'No se puede eliminar: el equipo está asociado a uno o más grupos musculares.');
+        return;
+    }
+
+    // Si no tiene relaciones, se puede eliminar
+    $user->delete();
+    $this->resetUI();
+    $this->emit('user-deleted', 'Usuario Eliminado');
+}
+
 }

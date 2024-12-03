@@ -38,8 +38,6 @@ class PreguntasControllerAPI extends Controller
         try {
             $userId = $request->input('userId');
             $respuestasData = $request->input('respuestas');
-            $puntaje = $request->input('puntaje');
-
             // Buscar el cliente por su ID
             $cliente = Customers::find($userId);
 
@@ -55,55 +53,51 @@ class PreguntasControllerAPI extends Controller
                 $respuesta->customers_id = $userId;
                 $respuesta->save();
             }
+            $cliente->rutina = 'personalizada';
+            $cliente->save();
+
+            // Calcular el puntaje total
+            $puntajeTotal = 0;
+            foreach ($request->input('respuestas') as $respuesta) {
+                $opcion = RespuestaOpcion::find((int)$respuesta['respuestaValor']); // Convertir a entero
+                if ($opcion) {
+                    $puntajeTotal += (int)$opcion->valor; // Asegurarse de que 'valor' también sea un entero
+                }
+            }
 
             // Asignar nivel basado en el puntaje total y el género
             $nivel = null;
             $genero = $cliente->sexo; // Asegúrate de que el modelo `Customers` tenga este atributo
 
             if ($genero === 'Hombre') {
-                if ($puntaje >= 17 && $puntaje <= 120) {
+                if ($puntajeTotal >= 50 && $puntajeTotal <= 120) {
                     $nivel = 'Principiante';
-                } elseif ($puntaje >= 121 && $puntaje <= 200) {
+                } elseif ($puntajeTotal >= 121 && $puntajeTotal <= 200) {
                     $nivel = 'Intermedio';
-                } elseif ($puntaje > 200) {
+                } elseif ($puntajeTotal > 200) {
                     $nivel = 'Avanzado';
                 }
             } elseif ($genero === 'Mujer') {
-                if ($puntaje >= 550 && $puntaje <= 620) {
+                if ($puntajeTotal >= 550 && $puntajeTotal <= 620) {
                     $nivel = 'Principiante';
-                } elseif ($puntaje >= 621 && $puntaje <= 700) {
+                } elseif ($puntajeTotal >= 621 && $puntajeTotal <= 700) {
                     $nivel = 'Intermedio';
-                } elseif ($puntaje > 700) {
+                } elseif ($puntajeTotal > 700) {
                     $nivel = 'Avanzado';
                 }
             }
 
-            Log::info('Puntaje total: ' . $puntaje);
+            Log::info('Puntaje total: ' . $puntajeTotal);
             Log::info('Nivel asignado: ' . $nivel);
 
             // Actualizar el nivel del cliente
             $cliente->nivel = $nivel;
             $cliente->save();
 
-            // Buscar y asignar la rutina adecuada basada en el nivel y el género
-            $rutina = Rutinas::where('nivel', $nivel)
-                ->where('sexo', $genero)
-
-                ->first();
-
-            if ($rutina) {
-                // Relacionar la rutina con el cliente
-                $cliente->rutinas()->syncWithoutDetaching([$rutina->id]);
-                Log::info('Rutina asignada: ' . $rutina->nombre);
-            } else {
-                Log::warning('No se encontró una rutina para el nivel ' . $nivel . ' y género ' . $genero);
-            }
-
             return response()->json([
                 'message' => 'Respuestas guardadas exitosamente',
-                'puntaje' => $puntaje,
-                'nivel_asignado' => $nivel,
-                'rutina_asignada' => $rutina ? $rutina->nombre : 'No se encontró rutina'
+                'puntaje' => $puntajeTotal,
+                'nivel_asignado' => $nivel
             ], 200);
         } catch (Exception $e) {
             // Registrar el error en el log de la aplicación
